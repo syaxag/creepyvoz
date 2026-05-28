@@ -27,83 +27,113 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Variables de estado
     let recognition = null;
-    let isRecording = false;
+    let isRecording = false;      // ¿El usuario quiere estar dictando ahora mismo?
+    let manualStop = false;       // ¿La parada la pidió el usuario (no una pausa)?
+    let baseText = '';            // Texto que había en la caja antes de empezar a dictar
+    let finalText = '';           // Texto ya confirmado durante esta sesión de dictado
     let currentObjectUrl = null;
     let currentDownloadName = 'loquendo.mp3';
     let isPlaying = false;
 
     // --- 1. RECONOCIMIENTO DE VOZ (Speech-to-Text) ---
+    const setDictationUI = (recording) => {
+        btnDictate.classList.toggle('recording', recording);
+        dictationStatus.classList.toggle('active', recording);
+        dictationStatus.textContent = recording
+            ? 'Escuchando... Háblale al micrófono'
+            : 'Micrófono inactivo';
+    };
+
     const initSpeechRecognition = () => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
-            dictationStatus.textContent = 'Dictado no soportado por tu navegador';
+            dictationStatus.textContent = 'Dictado no soportado por tu navegador (usa Chrome)';
             btnDictate.disabled = true;
+            btnDictate.title = 'El dictado por voz requiere Google Chrome o Microsoft Edge';
             return false;
         }
 
         recognition = new SpeechRecognition();
-        recognition.lang = 'es-ES'; // Idioma base
-        recognition.continuous = true; // Continuar escuchando
-        recognition.interimResults = true; // Mostrar resultados parciales
+        recognition.lang = 'es-ES'; // Español
+        recognition.continuous = true; // Seguir escuchando entre frases
+        recognition.interimResults = true; // Mostrar resultados parciales en vivo
 
         recognition.onstart = () => {
-            isRecording = true;
-            btnDictate.classList.add('recording');
-            dictationStatus.textContent = 'Escuchando... Háblale al micrófono';
-            dictationStatus.classList.add('active');
+            setDictationUI(true);
         };
 
+        // Chrome corta el reconocimiento tras una pausa de silencio aunque
+        // continuous=true. Si el usuario no ha pulsado "parar", reanudamos
+        // automáticamente para que el dictado se sienta ininterrumpido.
         recognition.onend = () => {
-            isRecording = false;
-            btnDictate.classList.remove('recording');
-            dictationStatus.textContent = 'Micrófono inactivo';
-            dictationStatus.classList.remove('active');
+            if (manualStop || !isRecording) {
+                isRecording = false;
+                setDictationUI(false);
+                return;
+            }
+            try {
+                recognition.start();
+            } catch (e) {
+                // Si falla el reinicio inmediato, reintenta una vez tras un instante.
+                setTimeout(() => {
+                    if (isRecording && !manualStop) {
+                        try { recognition.start(); } catch (_) { /* se ignora */ }
+                    }
+                }, 250);
+            }
         };
 
         recognition.onerror = (event) => {
             console.error('Error de reconocimiento:', event.error);
-            if (event.error === 'not-allowed') {
-                dictationStatus.textContent = 'Permiso denegado al micrófono';
-            } else {
-                dictationStatus.textContent = 'Error al grabar: ' + event.error;
+            // Errores que terminan definitivamente la sesión
+            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+                manualStop = true;
+                isRecording = false;
+                dictationStatus.textContent = 'Permiso de micrófono denegado. Actívalo en el navegador.';
+                dictationStatus.classList.remove('active');
+                btnDictate.classList.remove('recording');
+                return;
             }
-            recognition.stop();
+            // 'no-speech', 'aborted', 'network' son recuperables: onend reanudará.
         };
 
-        // Variable para guardar el texto previo a que empiece este bloque de reconocimiento
-        let baseText = '';
-
         recognition.onresult = (event) => {
-            let interimTranscript = '';
-            let finalTranscript = '';
-
+            let interim = '';
             for (let i = event.resultIndex; i < event.results.length; ++i) {
+                const transcript = event.results[i][0].transcript;
                 if (event.results[i].isFinal) {
-                    finalTranscript += event.results[i][0].transcript;
+                    finalText += transcript.trim() + ' ';
                 } else {
-                    interimTranscript += event.results[i][0].transcript;
+                    interim += transcript;
                 }
             }
 
-            const currentTranscript = finalTranscript || interimTranscript;
-            const separator = textInput.value.trim() === '' ? '' : ' ';
-            
-            if (finalTranscript !== '') {
-                textInput.value = baseText + separator + finalTranscript;
-                baseText = textInput.value;
-            } else {
-                textInput.value = baseText + separator + interimTranscript;
-            }
-            
+            const dictated = (finalText + interim).replace(/\s+/g, ' ').trim();
+            const separator = baseText && dictated ? ' ' : '';
+            textInput.value = baseText + separator + dictated;
             updateCharCount();
         };
 
         btnDictate.addEventListener('click', () => {
             if (isRecording) {
+                // El usuario para el dictado
+                manualStop = true;
+                isRecording = false;
                 recognition.stop();
+                setDictationUI(false);
             } else {
-                baseText = textInput.value;
-                recognition.start();
+                // El usuario empieza a dictar: arranca desde el texto actual
+                manualStop = false;
+                isRecording = true;
+                baseText = textInput.value.trim();
+                finalText = '';
+                try {
+                    recognition.start();
+                } catch (e) {
+                    // Si ya estaba activo por una parada lenta, lo reiniciamos limpio.
+                    recognition.stop();
+                    setTimeout(() => { try { recognition.start(); } catch (_) {} }, 250);
+                }
             }
         });
 
