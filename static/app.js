@@ -83,18 +83,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
+        const stopWithMessage = (message) => {
+            manualStop = true;
+            isRecording = false;
+            dictationStatus.textContent = message;
+            dictationStatus.classList.remove('active');
+            btnDictate.classList.remove('recording');
+        };
+
         recognition.onerror = (event) => {
             console.error('Error de reconocimiento:', event.error);
-            // Errores que terminan definitivamente la sesión
             if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-                manualStop = true;
-                isRecording = false;
-                dictationStatus.textContent = 'Permiso de micrófono denegado. Actívalo en el navegador.';
-                dictationStatus.classList.remove('active');
-                btnDictate.classList.remove('recording');
-                return;
+                stopWithMessage('Permiso de micrófono denegado. Actívalo en el navegador.');
+            } else if (event.error === 'network') {
+                // Brave (y otros navegadores con privacidad reforzada) bloquean el
+                // servicio de Google en el que se apoya la Web Speech API: nunca
+                // llegan resultados. No tiene sentido reintentar en bucle.
+                stopWithMessage('El dictado por voz está bloqueado en este navegador. Usa Google Chrome o Microsoft Edge.');
             }
-            // 'no-speech', 'aborted', 'network' son recuperables: onend reanudará.
+            // 'no-speech' y 'aborted' son recuperables: onend reanudará.
         };
 
         recognition.onresult = (event) => {
