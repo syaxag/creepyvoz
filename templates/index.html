@@ -49,12 +49,12 @@
         </header>
 
         <!-- Anuncio superior -->
-        {% if adsense_id %}
+        {% if adsense_id and ad_slot_top %}
         <div class="ad-slot ad-slot-top">
             <ins class="adsbygoogle"
                  style="display:block"
                  data-ad-client="{{ adsense_id }}"
-                 data-ad-slot="0000000000"
+                 data-ad-slot="{{ ad_slot_top }}"
                  data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
@@ -172,12 +172,12 @@
         </main>
 
         <!-- Anuncio inferior -->
-        {% if adsense_id %}
+        {% if adsense_id and ad_slot_bottom %}
         <div class="ad-slot ad-slot-bottom">
             <ins class="adsbygoogle"
                  style="display:block"
                  data-ad-client="{{ adsense_id }}"
-                 data-ad-slot="1111111111"
+                 data-ad-slot="{{ ad_slot_bottom }}"
                  data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>

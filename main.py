@@ -19,9 +19,15 @@ CACHE_MAX_ENTRIES = 128         # Audios cacheados en memoria (LRU)
 EXTERNAL_TIMEOUT = 15           # Timeout (s) hacia los servicios de voz
 
 # El ID de editor de AdSense y el correo de contacto se leen del entorno del host.
-ADSENSE_PUBLISHER_ID = os.environ.get('ADSENSE_PUBLISHER_ID', '').strip()
+# El ID de editor NO es secreto (aparece en el HTML de cualquier web con anuncios).
+ADSENSE_PUBLISHER_ID = os.environ.get('ADSENSE_PUBLISHER_ID', 'ca-pub-9765854686059650').strip()
 CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'gnosixio@gmail.com').strip()
 SITE_NAME = 'CreepyVoz'
+
+# IDs de los bloques de anuncio (se obtienen en AdSense DESPUÉS de la aprobación).
+# Mientras estén vacíos, no se muestran unidades de anuncio (solo el script de conexión).
+AD_SLOT_TOP = os.environ.get('AD_SLOT_TOP', '').strip()
+AD_SLOT_BOTTOM = os.environ.get('AD_SLOT_BOTTOM', '').strip()
 
 # Voces oficiales de Loquendo (vía caché de Oddcast) y voces auxiliares (Polly/ttsmp3).
 LOQUENDO_VOICES = {'Jorge': 6, 'Leonor': 9, 'Carmen': 1}
@@ -159,6 +165,8 @@ def generate_polly_voice(text, voice_name):
 def inject_globals():
     return {
         "adsense_id": ADSENSE_PUBLISHER_ID,
+        "ad_slot_top": AD_SLOT_TOP,
+        "ad_slot_bottom": AD_SLOT_BOTTOM,
         "contact_email": CONTACT_EMAIL,
         "site_name": SITE_NAME,
         "max_text_length": MAX_TEXT_LENGTH,
