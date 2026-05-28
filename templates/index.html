@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreepyVoz | Voz Loquendo Online Gratis para Creepypastas y Videos</title>
+    <meta name="description" content="Genera la voz legendaria de Loquendo online y gratis. Convierte texto a voz para creepypastas, narraciones de terror y videos. Descarga el audio en MP3 al instante.">
+    <meta name="keywords" content="loquendo, voz loquendo, texto a voz, creepypasta, narrador, TTS español, sintetizador de voz, voz jorge loquendo">
+    <link rel="canonical" href="{{ request.url_root }}">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / redes sociales -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="CreepyVoz | Voz Loquendo Online Gratis">
+    <meta property="og:description" content="Convierte texto a la voz original de Loquendo. Perfecto para creepypastas y videos de terror. Gratis y con descarga en MP3.">
+    <meta property="og:url" content="{{ request.url_root }}">
+    <meta name="twitter:card" content="summary">
+
+    <!-- Favicon (fantasma en SVG, sin archivo extra) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Hojas de estilo con parámetro de versión para evitar caché -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.3">
+
+    {% if adsense_id %}
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsense_id }}" crossorigin="anonymous"></script>
+    {% endif %}
+</head>
+<body>
+    <!-- Efecto de luces de fondo animadas -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    
+    <div class="container">
+        <!-- Cabecera -->
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-ghost icon-float"></i>
+                <h1>CREEPY<span>VOZ</span></h1>
+            </div>
+            <p class="subtitle">La voz legendaria que dio vida al terror en internet</p>
+        </header>
+
+        <!-- Anuncio superior -->
+        {% if adsense_id %}
+        <div class="ad-slot ad-slot-top">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="{{ adsense_id }}"
+                 data-ad-slot="0000000000"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+        {% endif %}
+
+        <!-- Sección Principal -->
+        <main class="grid-layout">
+            
+            <!-- Columna Izquierda: Controles y Dictado -->
+            <section class="card panel-controls">
+                <h2 class="card-title"><i class="fa-solid fa-microphone-lines"></i> Transcriptor de Voz</h2>
+                <p class="card-desc">Haz clic abajo para dictarle a la aplicación. Tu voz se transcribirá a texto de forma automática.</p>
+                
+                <!-- Botón de dictar -->
+                <div class="dictation-zone">
+                    <button id="btn-dictate" class="btn-dictate">
+                        <span class="pulse-ring"></span>
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <div id="dictation-status" class="dictation-status">Micrófono inactivo</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Selector de Voces -->
+                <h2 class="card-title"><i class="fa-solid fa-sliders"></i> Voz Loquendo</h2>
+                <p class="card-desc">Selecciona la voz para la síntesis de audio.</p>
+                
+                <div class="voice-selector-container">
+                    <select id="voice-select" class="voice-select">
+                        <optgroup label="🔊 Voces Oficiales Loquendo">
+                            <option value="Jorge" selected>🎙️ Jorge (Voz de Loquendo Oficial - Original del 2008)</option>
+                            <option value="Leonor">🎙️ Leonor (Voz Loquendo Oficial - Femenina Clásica)</option>
+                            <option value="Carmen">🎙️ Carmen (Voz Loquendo Oficial - Estilo Informativo)</option>
+                        </optgroup>
+                        <optgroup label="🔊 Voces Auxiliares (Amazon Polly)">
+                            <option value="Miguel">🎙️ Miguel (Robótico - Similar a Jorge)</option>
+                            <option value="Enrique">🎙️ Enrique (Español España - Estilo Narrador)</option>
+                            <option value="Conchita">🎙️ Conchita (Español España - Femenina)</option>
+                            <option value="Mia">🎙️ Mia (Español México - Neutra)</option>
+                            <option value="Penelope">🎙️ Penelope (Español Latinoamericano)</option>
+                            <option value="Lupe">🎙️ Lupe (Español US - Tono Cálido)</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Columna Derecha: Texto y Reproducción -->
+            <section class="card panel-text">
+                <div class="panel-text-header">
+                    <h2 class="card-title"><i class="fa-solid fa-file-signature"></i> Texto a Sintetizar</h2>
+                    <button id="btn-clear" class="btn-clear" title="Limpiar texto"><i class="fa-solid fa-trash-can"></i> Limpiar</button>
+                </div>
+                
+                <!-- Caja de texto -->
+                <div class="textarea-wrapper">
+                    <textarea id="text-input" placeholder="Escribe, copia o pega aquí el texto que quieres que diga Loquendo..."></textarea>
+                    <div class="character-counter"><span id="char-count">0</span> caracteres</div>
+                </div>
+
+                <!-- Controles de Síntesis -->
+                <div class="synthesis-controls">
+                    <button id="btn-synthesize" class="btn btn-primary">
+                        Sintetizar
+                    </button>
+                </div>
+
+                <!-- Sección del Reproductor (Se muestra activa cuando hay audio cargado) -->
+                <div id="player-container" class="player-container disabled">
+                    <div class="divider"></div>
+                    <div class="player-header">
+                        <div class="player-info">
+                            <span class="player-status-badge">Audio Listo</span>
+                            <span id="playing-voice-info" class="playing-voice-info">Voz: Ninguna</span>
+                        </div>
+                        <button id="btn-download" class="btn btn-download" disabled>
+                            <i class="fa-solid fa-download"></i> Descargar MP3
+                        </button>
+                    </div>
+
+                    <!-- Visualizador de ondas animadas -->
+                    <div class="wave-container">
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                    </div>
+
+                    <!-- Controles del reproductor -->
+                    <div class="audio-player-controls">
+                        <button id="btn-play-pause" class="btn-play-pause"><i class="fa-solid fa-play"></i></button>
+                        <div class="progress-bar-wrapper">
+                            <span id="current-time">00:00</span>
+                            <div id="progress-bar" class="progress-bar">
+                                <div id="progress-fill" class="progress-fill"></div>
+                            </div>
+                            <span id="duration-time">00:00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Anuncio inferior -->
+        {% if adsense_id %}
+        <div class="ad-slot ad-slot-bottom">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="{{ adsense_id }}"
+                 data-ad-slot="1111111111"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+        {% endif %}
+
+        <!-- Sección informativa (contenido para SEO y aprobación de AdSense) -->
+        <section class="card info-section">
+            <h2 class="card-title"><i class="fa-solid fa-circle-info"></i> ¿Qué es CreepyVoz?</h2>
+            <p class="info-text">
+                <strong>CreepyVoz</strong> es un sintetizador de voz online y gratuito que recrea la
+                mítica voz de <strong>Loquendo</strong>, popular en miles de videos de creepypastas,
+                narraciones de terror y contenido de humor en internet. Escribe o dicta tu texto,
+                elige una voz y obtén un audio MP3 listo para descargar y usar en tus videos.
+            </p>
+            <h3 class="info-subtitle">¿Cómo se usa?</h3>
+            <ol class="info-list">
+                <li>Escribe o pega tu texto en el recuadro (o díctalo con el micrófono).</li>
+                <li>Elige la voz de Loquendo que prefieras (Jorge, Leonor, Carmen y más).</li>
+                <li>Pulsa <strong>Sintetizar</strong> y escucha el resultado al instante.</li>
+                <li>Descarga el audio en formato MP3 con un clic.</li>
+            </ol>
+        </section>
+
+        <!-- Pie de página -->
+        <footer>
+            <p>{{ site_name }} &copy; 2026 — Sintetizador de voz Loquendo para creadores de misterios y creepypastas</p>
+            <p class="footer-links">
+                <a href="{{ url_for('privacy') }}">Política de Privacidad</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Elemento de audio nativo oculto -->
+    <audio id="audio-element"></audio>
+
+    <!-- Scripts de la app con parámetro de versión para evitar caché -->
+    <script src="{{ url_for('static', filename='app.js') }}?v=1.2"></script>
+</body>
+</html>

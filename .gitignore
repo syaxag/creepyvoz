@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Audio generado (ya no se persiste, pero por si acaso)
+static/audio/
+
+# Configuración local de Claude Code (específica de tu máquina)
+.claude/settings.local.json
+
+# Sistema operativo / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
