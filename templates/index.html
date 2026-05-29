@@ -16,6 +16,75 @@
     <meta property="og:url" content="{{ request.url_root }}">
     <meta name="twitter:card" content="summary">
 
+    <!-- Datos estructurados (Schema.org) para resultados enriquecidos en Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "CreepyVoz",
+          "url": "{{ request.url_root }}",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Web",
+          "browserRequirements": "Requires JavaScript",
+          "description": "Sintetizador de voz Loquendo online y gratuito. Convierte texto a voz para creepypastas, narraciones de terror y videos, y descarga el audio en MP3.",
+          "inLanguage": "es",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "¿Es gratis usar CreepyVoz?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sí. CreepyVoz es totalmente gratuito. Escribe tu texto, elige una voz de Loquendo y descarga el audio en MP3 sin pagar ni registrarte."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Cómo descargo la voz de Loquendo en MP3?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Escribe o pega tu texto, pulsa Sintetizar y, cuando suene el audio, haz clic en el botón Descargar MP3. El archivo se guarda en tu dispositivo listo para usarlo en tus videos."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Qué voces de Loquendo están disponibles?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Las voces oficiales de Loquendo (Jorge, Leonor y Carmen) más voces auxiliares de Amazon Polly como Miguel, Enrique, Conchita, Mia, Penélope y Lupe, en español de España y Latinoamérica."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Puedo usar los audios en mis videos de YouTube o TikTok?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sí, puedes usar los audios generados en tus creepypastas, narraciones y videos para YouTube, TikTok u otras plataformas."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "¿Necesito instalar algún programa?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. CreepyVoz funciona directamente en el navegador desde el ordenador o el móvil. No hay que instalar ni descargar ninguna aplicación."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
     <!-- Favicon (fantasma en SVG, sin archivo extra) -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E">
 
@@ -26,7 +95,7 @@
     <!-- FontAwesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Hojas de estilo con parámetro de versión para evitar caché -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.6">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.7">
 
     {% if adsense_id %}
     <!-- Google AdSense -->
@@ -202,6 +271,36 @@
             </ol>
         </section>
 
+        <!-- Preguntas frecuentes (FAQ para SEO y resultados enriquecidos) -->
+        <section class="card faq-section">
+            <h2 class="card-title"><i class="fa-solid fa-circle-question"></i> Preguntas frecuentes</h2>
+
+            <details class="faq-item">
+                <summary>¿Es gratis usar CreepyVoz?</summary>
+                <p>Sí. CreepyVoz es totalmente gratuito. Escribe tu texto, elige una voz de Loquendo y descarga el audio en MP3 sin pagar ni registrarte.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Cómo descargo la voz de Loquendo en MP3?</summary>
+                <p>Escribe o pega tu texto, pulsa <strong>Sintetizar</strong> y, cuando suene el audio, haz clic en el botón <strong>Descargar MP3</strong>. El archivo se guarda en tu dispositivo listo para usarlo en tus videos.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Qué voces de Loquendo están disponibles?</summary>
+                <p>Las voces oficiales de Loquendo (Jorge, Leonor y Carmen) más voces auxiliares de Amazon Polly como Miguel, Enrique, Conchita, Mia, Penélope y Lupe, en español de España y Latinoamérica.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Puedo usar los audios en mis videos de YouTube o TikTok?</summary>
+                <p>Sí, puedes usar los audios generados en tus creepypastas, narraciones y videos para YouTube, TikTok u otras plataformas.</p>
+            </details>
+
+            <details class="faq-item">
+                <summary>¿Necesito instalar algún programa?</summary>
+                <p>No. CreepyVoz funciona directamente en el navegador desde el ordenador o el móvil. No hay que instalar ni descargar ninguna aplicación.</p>
+            </details>
+        </section>
+
         <!-- Pie de página -->
         <footer>
             <p>{{ site_name }} &copy; 2026 — Sintetizador de voz Loquendo para creadores de misterios y creepypastas</p>
@@ -215,6 +314,6 @@
     <audio id="audio-element"></audio>
 
     <!-- Scripts de la app con parámetro de versión para evitar caché -->
-    <script src="{{ url_for('static', filename='app.js') }}?v=1.6"></script>
+    <script src="{{ url_for('static', filename='app.js') }}?v=1.7"></script>
 </body>
 </html>
